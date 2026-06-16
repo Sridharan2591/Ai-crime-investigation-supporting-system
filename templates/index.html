@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime AI | Forensic Dashboard</title>
+    <style>
+        :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --accent: #238636; --text: #c9d1d9; --danger: #d73a49; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
+        h2, h3 { margin-top: 0; color: #58a6ff; }
+        .btn { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.3s; }
+        .btn:hover { opacity: 0.8; }
+        .btn-blue { background: #1f6feb; }
+        .btn-purple { background: #8957e5; }
+        .btn-red { background: var(--danger); }
+        .result-box { margin-top: 15px; padding: 12px; background: #010409; border-radius: 6px; border-left: 4px solid #58a6ff; font-family: 'Courier New', Courier, monospace; min-height: 20px; }
+        
+        /* Scrollbox for Emergency Contacts */
+        .scroll-box { height: 180px; overflow-y: auto; background: #010409; padding: 10px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9em; margin-top: 10px; }
+        .scroll-box hr { border: 0; border-top: 1px solid var(--border); margin: 10px 0; }
+        
+        /* Chat Styling */
+        #chat-window { height: 200px; overflow-y: auto; background: #010409; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid var(--border); }
+        .input-group { display: flex; gap: 10px; }
+        input[type="text"] { flex-grow: 1; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 30px;">
+            <div>
+                <h2 style="margin: 0;">🔍 CRIME AI FORENSIC LABORATORY</h2>
+                <small style="color: #8b949e;">Advanced Digital Evidence Analysis System</small>
+            </div>
+            <div style="text-align: right;">
+                <strong id="date">{{ current_date }}</strong><br>
+                <span id="clock" style="color: #58a6ff;"></span>
+            </div>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <h3>🖼️ Image Tampering</h3>
+                <input type="file" id="imgFile">
+                <button class="btn" onclick="runAnalysis('image', 'imgFile', 'imgRes')">Scan Metadata & Pixels</button>
+                <div id="imgRes" class="result-box">System Idle...</div>
+            </div>
+
+            <div class="card">
+                <h3>🎥 Video Deepfake Scan</h3>
+                <input type="file" id="vidFile">
+                <button class="btn" onclick="runAnalysis('video', 'vidFile', 'vidRes')">Analyze Face Consistency</button>
+                <div id="vidRes" class="result-box">System Idle...</div>
+            </div>
+
+            <div class="card">
+                <h3>🎙️ Audio & Voice Forensic</h3>
+                <input type="file" id="audFile">
+                <button class="btn" onclick="runAnalysis('audio', 'audFile', 'audRes')">Process Vocal Biometrics</button>
+                <div id="audRes" class="result-box">System Idle...</div>
+            </div>
+
+            <div class="card">
+                <h3>🤖 Face-Aware AI Assistant</h3>
+                <button class="btn btn-blue" onclick="startWebcam()">Initialize Vision Thread</button>
+                <div id="chat-window"></div>
+                <div class="input-group">
+                    <input type="text" id="chatInput" placeholder="Describe the investigation...">
+                    <button class="btn btn-blue" style="width: 80px; margin:0;" onclick="sendChat()">Ask</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🚨 Emergency Resources</h3>
+                <div class="scroll-box">
+                    <p><strong>🌐 Online Reporting:</strong></p>
+                    <ul style="padding-left: 15px; margin: 5px 0;">
+                        <li><a href="https://www.cybercrime.gov.in/" target="_blank" style="color:#58a6ff;">National Cyber Crime Portal</a></li>
+                        <li><a href="https://www.childlineindia.org/" target="_blank" style="color:#58a6ff;">Childline India - Abuse Report</a></li>
+                        <li><a href="https://www.cert-in.org.in/" target="_blank" style="color:#58a6ff;">CERT-In Incident Report</a></li>
+                    </ul>
+                    <hr>
+                    <p><strong>📞 Emergency Helplines:</strong></p>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr><td>Police / Emergency:</td><td style="color:#ff7b72; text-align:right;">112</td></tr>
+                        <tr><td>Cyber Crime Help:</td><td style="color:#ff7b72; text-align:right;">1930</td></tr>
+                        <tr><td>Child Helpline:</td><td style="color:#ff7b72; text-align:right;">1098</td></tr>
+                        <tr><td>Women Helpline:</td><td style="color:#ff7b72; text-align:right;">181</td></tr>
+                    </table>
+                </div>
+                <button class="btn btn-red" onclick="window.open('https://www.cybercrime.gov.in/', '_blank')">File Official Complaint</button>
+            </div>
+
+            <div class="card" style="justify-content: center; align-items: center; border: 2px dashed #8957e5;">
+                <h3 style="color:#8957e5;">📄 Generate Documentation</h3>
+                <p style="text-align: center; font-size: 0.9em;">Compile all scanned results into a legal-ready PDF report.</p>
+                <button class="btn btn-purple" style="max-width: 200px;" onclick="window.location.href='/generate_report'">Download PDF Report</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Real-time Clock
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+
+        // Core Analysis Runner
+        async function runAnalysis(type, inputId, resultId) {
+            const file = document.getElementById(inputId).files[0];
+            if (!file) return alert("Error: No file selected for analysis.");
+            
+            document.getElementById(resultId).innerHTML = "⏳ <span style='color:#e3b341'>Scanning Evidence...</span>";
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch(`/analyze_${type}`, { method: 'POST', body: formData });
+                const data = await response.json();
+                document.getElementById(resultId).innerHTML = `<strong>STATUS:</strong> ${data.result}`;
+            } catch (e) {
+                document.getElementById(resultId).innerHTML = "❌ <span style='color:#ff7b72'>Communication Error</span>";
+            }
+        }
+
+        // AI Chat Logic
+        async function sendChat() {
+            const input = document.getElementById('chatInput');
+            const window = document.getElementById('chat-window');
+            if(!input.value) return;
+
+            window.innerHTML += `<p style="color:#58a6ff"><b>Agent:</b> ${input.value}</p>`;
+            const res = await fetch('/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ message: input.value })
+            });
+            const data = await res.json();
+            window.innerHTML += `<p style="color:#7ee787"><b>Assistant:</b> ${data.response}</p>`;
+            input.value = "";
+            window.scrollTop = window.scrollHeight;
+        }
+
+        function startWebcam() {
+            fetch('/start_live_face').then(() => alert("Live Vision Thread Started."));
+        }
+    </script>
+</body>
+</html>

@@ -152,3 +152,7 @@ Bachelor of Technology – Artificial Intelligence and Data Science
 ## License
 
 This project is developed for academic and research purposes.
+
+THE MODELS OF THIS PROJECTS ARENT UPLOADED HERE BECAUSE WE CANT UPLOAD HIGH MEMORY FOLDERS SO KINDLY MAIL ME I WILL REPLY YOU ASAP
+
+EMAIL:Sridharan2591@gmail.com
